@@ -22,8 +22,11 @@ function validate_email(string $v): bool
     return filter_var($v, FILTER_VALIDATE_EMAIL) !== false;
 }
 
+/**
+ * True when the character length of $v (multibyte-safe) is within [$min, $max].
+ */
 function validate_length(string $v, int $min, int $max): bool
 {
-    // TODO: return true when mb_strlen($v) is within [$min, $max]
-    return false;
+    $len = mb_strlen($v, 'UTF-8');
+    return $len >= $min && $len <= $max;
 }
