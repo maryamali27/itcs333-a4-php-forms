@@ -72,7 +72,18 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact Us</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 32rem; margin: 2rem auto; padding: 0 1rem; }
+    label { display: block; margin-top: 1rem; font-weight: 600; }
+    input, textarea { display: block; width: 100%; padding: .5rem; margin-top: .25rem; box-sizing: border-box; font: inherit; }
+    textarea { min-height: 8rem; }
+    .error { color: #b00020; font-size: .9rem; margin: .25rem 0 0; }
+    .has-error { border: 2px solid #b00020; }
+    .summary { background: #fdecea; border: 1px solid #b00020; padding: .75rem; }
+    button { margin-top: 1.25rem; padding: .6rem 1.5rem; font: inherit; cursor: pointer; }
+  </style>
 </head>
 <body>
   <h1>Contact Us</h1>
@@ -81,18 +92,27 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <p class="summary" role="alert">Please fix the errors below and submit again.</p>
   <?php endif; ?>
 
-  <form method="post" action="index.php">
-    <label>Name <input type="text" name="name" value="<?= e($values['name']) ?>"></label><br>
+  <!-- novalidate: let the server-side PHP validation handle every check -->
+  <form method="post" action="index.php" novalidate>
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name"
+           value="<?= e($values['name']) ?>"
+           class="<?= isset($errors['name']) ? 'has-error' : '' ?>">
     <?php if (isset($errors['name'])): ?>
       <p class="error"><?= e($errors['name']) ?></p>
     <?php endif; ?>
 
-    <label>Email <input type="email" name="email" value="<?= e($values['email']) ?>"></label><br>
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email"
+           value="<?= e($values['email']) ?>"
+           class="<?= isset($errors['email']) ? 'has-error' : '' ?>">
     <?php if (isset($errors['email'])): ?>
       <p class="error"><?= e($errors['email']) ?></p>
     <?php endif; ?>
 
-    <label>Message <textarea name="message"><?= e($values['message']) ?></textarea></label><br>
+    <label for="message">Message</label>
+    <textarea id="message" name="message"
+              class="<?= isset($errors['message']) ? 'has-error' : '' ?>"><?= e($values['message']) ?></textarea>
     <?php if (isset($errors['message'])): ?>
       <p class="error"><?= e($errors['message']) ?></p>
     <?php endif; ?>
