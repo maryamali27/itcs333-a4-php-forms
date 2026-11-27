@@ -60,6 +60,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     } elseif (!validate_length($values['message'], 10, 1000)) {
         $errors['message'] = 'Message must be between 10 and 1000 characters (too short or too long).';
     }
+
+    // Valid submission -> Post/Redirect/Get.
+    if ($errors === []) {
+        header('Location: success.php', true, 303);
+        exit;
+    }
 }
 ?>
 <!DOCTYPE html>
