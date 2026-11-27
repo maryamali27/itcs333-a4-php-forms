@@ -2,14 +2,16 @@
 declare(strict_types=1);
 
 /**
- * ITCS333 A4 starter — implement the three pure validation functions.
+ * ITCS333 A4 — pure validation functions.
  * They are unit-tested by the autograder (tests/UnitTest.php).
  */
 
+/**
+ * True when $v is not empty after trimming surrounding whitespace.
+ */
 function validate_required(string $v): bool
 {
-    // TODO: return true when $v is not empty after trimming
-    return false;
+    return trim($v) !== '';
 }
 
 function validate_email(string $v): bool
