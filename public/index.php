@@ -31,13 +31,35 @@ function post_field(string $key): string
     return is_string($value) ? trim($value) : '';
 }
 
-// Form values (used to repopulate the form).
+// Form values (used to repopulate the form) and validation errors.
 $values = ['name' => '', 'email' => '', 'message' => ''];
+$errors = [];
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $values['name']    = post_field('name');
     $values['email']   = post_field('email');
     $values['message'] = post_field('message');
+
+    // Name: required, 2-60 characters.
+    if (!validate_required($values['name'])) {
+        $errors['name'] = 'Name is required.';
+    } elseif (!validate_length($values['name'], 2, 60)) {
+        $errors['name'] = 'Name must be between 2 and 60 characters (too short or too long).';
+    }
+
+    // Email: required and valid format.
+    if (!validate_required($values['email'])) {
+        $errors['email'] = 'Email is required.';
+    } elseif (!validate_email($values['email'])) {
+        $errors['email'] = 'Please enter a valid email address (invalid format).';
+    }
+
+    // Message: required, 10-1000 characters.
+    if (!validate_required($values['message'])) {
+        $errors['message'] = 'Message is required.';
+    } elseif (!validate_length($values['message'], 10, 1000)) {
+        $errors['message'] = 'Message must be between 10 and 1000 characters (too short or too long).';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -48,10 +70,27 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 </head>
 <body>
   <h1>Contact Us</h1>
+
+  <?php if ($errors !== []): ?>
+    <p class="summary" role="alert">Please fix the errors below and submit again.</p>
+  <?php endif; ?>
+
   <form method="post" action="index.php">
     <label>Name <input type="text" name="name" value="<?= e($values['name']) ?>"></label><br>
+    <?php if (isset($errors['name'])): ?>
+      <p class="error"><?= e($errors['name']) ?></p>
+    <?php endif; ?>
+
     <label>Email <input type="email" name="email" value="<?= e($values['email']) ?>"></label><br>
+    <?php if (isset($errors['email'])): ?>
+      <p class="error"><?= e($errors['email']) ?></p>
+    <?php endif; ?>
+
     <label>Message <textarea name="message"><?= e($values['message']) ?></textarea></label><br>
+    <?php if (isset($errors['message'])): ?>
+      <p class="error"><?= e($errors['message']) ?></p>
+    <?php endif; ?>
+
     <button type="submit">Send</button>
   </form>
 </body>
